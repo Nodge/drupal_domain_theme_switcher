@@ -1,0 +1,56 @@
+<?php
+/**
+ * @file
+ */ 
+ 
+/**
+ * Implementation of hook_perm().
+ */
+function domain_theme_switcher_perm() {
+	return array('configure Domain theme switcher', 'switch Domain theme switcher');
+} 
+
+/**
+ * Implementation of hook_menu().
+ */ 
+function domain_theme_switcher_menu() {
+	$items['admin/config/system/domain-theme-switcher'] = array(
+		'title' => 'Domain theme switcher',
+		'description' => t('Select theme for poor vision and mobile sites.'),
+		'access arguments' => array('configure Domain theme switcher'),
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('domain_theme_switcher_themes_configuration_form'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'domain_theme_switcher.admin.inc',
+	);  
+	return $items;
+} 
+
+function domain_theme_switcher_custom_theme() {
+	$theme = null;
+	
+	if ($_SERVER["HTTP_HOST"] === variable_get('poor_vision_domain', '')) {
+		$theme = variable_get('poor_vision_theme_name', false); 
+	}
+	else if ($_SERVER["HTTP_HOST"] === variable_get('mobile_domain', '')) {
+		$theme = variable_get('mobile_theme_name', false); 
+	}
+	
+	if (!empty($theme)) {
+		$base_domains = variable_get('base_domain', '');
+		$base_domains = str_replace('*', '!', $base_domains);
+		$base_domains = preg_quote($base_domains);
+		$base_domains = preg_replace('#\s*,\s*#', '|', $base_domains);
+		$base_domains = str_replace('\!', '[^\/]+', $base_domains);
+		
+		drupal_add_js('jQuery(document).ready(function($) { 
+			$("a").not(".dts-no-replace").each(function() { 
+				var url = this.href;
+				url = url.replace(/^(https?\:)?\/\/('.$base_domains.')/i, "");
+				this.href = url;
+			});
+		});', 'inline');
+		
+		return $theme;
+	}
+}

@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Deleting all the Mobile tools variables
+ */
+function domain_theme_switcher_uninstall() {
+	variable_del('base_domain');
+
+	variable_del('poor_vision_theme_name');
+	variable_del('poor_vision_domain');
+	
+	variable_del('mobile_theme_name');
+	variable_del('mobile_domain');
+}
+
+

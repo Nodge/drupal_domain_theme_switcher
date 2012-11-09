@@ -1,0 +1,10 @@
+name = Domain theme switcher
+description = "Theme switcher (use domain name)"
+package = custom
+version = "7.x-1.0"
+core = "7.x"
+configure = admin/config/system/domain-theme-switcher
+files[] = domain_theme_switcher.module
+files[] = domain_theme_switcher.install
+files[] = domain_theme_switcher.admin.inc
+files[] = README.md
